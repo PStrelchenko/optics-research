@@ -21,6 +21,9 @@ dependencies {
 intellij {
     version '2019.3.2'
 }
+
+intellij.plugins = ['Kotlin', 'java']
+
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }

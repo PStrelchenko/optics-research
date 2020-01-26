@@ -1,16 +1,15 @@
 <idea-plugin>
     <id>optics-generator-plugin</id>
-    <name>Plugin display name here</name>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <name>Optics Generator</name>
+    <vendor email="p.strelchenko@hh.ru" url="hh.ru">hh.ru</vendor>
 
     <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
+    Plugin for generating different Optics in Kotlin classes
     ]]></description>
 
-    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-         on how to target different products -->
     <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.kotlin</depends>
+    <depends>com.intellij.modules.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
@@ -18,5 +17,9 @@
 
     <actions>
         <!-- Add your actions here -->
+        <action id="optics_plugin.actions.GenerateLensAction" class="optics_plugin.actions.GenerateLensAction"
+                text="Generate Lens..." description="Generating Lens from current data class">
+            <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="KotlinGenerateGroup"/>
+        </action>
     </actions>
 </idea-plugin>
