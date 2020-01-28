@@ -13,12 +13,15 @@ import javax.swing.JComponent
 
 class GenerateLensDialog(ktClass: KtClass) : DialogWrapper(ktClass.project) {
 
-    private val parametersListModel = CollectionListModel<KtParameter>(ktClass.primaryConstructorParameters)
+    private val parametersListModel: CollectionListModel<KtParameter>
     private val myComponent: JComponent
 
 
     init {
         title = "Choose parameters for generating lenses"
+
+        val targetParameters = fetchTargetParameters(ktClass)
+        parametersListModel = CollectionListModel(targetParameters)
 
         val jList = JBList(parametersListModel).apply {
             cellRenderer = DefaultPsiElementCellRenderer()
@@ -38,5 +41,21 @@ class GenerateLensDialog(ktClass: KtClass) : DialogWrapper(ktClass.project) {
 
 
     fun getSelectedParameters(): List<KtParameter> = parametersListModel.items
+
+
+    private fun fetchTargetParameters(ktClass: KtClass): List<KtParameter> {
+        val primaryConstructorParameters = ktClass.primaryConstructorParameters
+        val companionObject = ktClass.companionObjects.firstOrNull()
+
+        return if (companionObject == null) {
+            primaryConstructorParameters
+        } else {
+            val properties = companionObject.body?.properties ?: listOf()
+
+            primaryConstructorParameters.filter { parameter ->
+                properties.find { it.name == parameter.name } == null
+            }
+        }
+    }
 
 }
