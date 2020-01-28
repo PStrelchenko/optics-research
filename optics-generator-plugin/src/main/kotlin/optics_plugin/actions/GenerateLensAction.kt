@@ -5,12 +5,17 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.LangDataKeys
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.psi.util.PsiTreeUtil
+import optics_plugin.ui.GenerateLensDialog
 import org.jetbrains.kotlin.psi.KtClass
 
 class GenerateLensAction : AnAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
-        // TODO: insert action logic here
+        val ktClass = getKtClassFromContext(e)
+        ktClass?.let { dataClass ->
+            val dialog = GenerateLensDialog(dataClass)
+            dialog.show()
+        }
     }
 
     override fun update(e: AnActionEvent) {
