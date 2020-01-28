@@ -82,10 +82,20 @@ class GenerateLensAction : AnAction() {
 
     private fun KtClass.addToImports(vararg imports: String) {
         val ktPsiFactory = KtPsiFactory(project)
+        val existingImports = containingKtFile.importDirectives.mapTo(mutableSetOf()) { directive ->
+            directive.importPath?.fqName?.asString().orEmpty()
+        }
+
+        val importListPsiElement = containingKtFile.importList
         for (path in imports) {
-            containingKtFile.importList?.add(ktPsiFactory.createLineBreak())
-            containingKtFile.importList?.add(ktPsiFactory.createImportDirective(ImportPath.fromString(path)))
-            containingKtFile.importList?.add(ktPsiFactory.createLineBreak())
+            val importDirective = ktPsiFactory.createImportDirective(ImportPath.fromString(path))
+            if (existingImports.contains(path)) {
+                continue
+            }
+
+            importListPsiElement?.add(ktPsiFactory.createLineBreak())
+            importListPsiElement?.add(importDirective)
+            importListPsiElement?.add(ktPsiFactory.createLineBreak())
         }
     }
 
