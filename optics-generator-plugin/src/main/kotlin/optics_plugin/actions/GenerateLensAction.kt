@@ -8,6 +8,7 @@ import com.intellij.openapi.application.runWriteAction
 import com.intellij.psi.codeStyle.CodeStyleManager
 import com.intellij.psi.util.PsiTreeUtil
 import optics_plugin.Constants
+import optics_plugin.extensions.isNullableType
 import optics_plugin.generator.toLensReferencePropertyDeclaration
 import optics_plugin.ui.GenerateLensDialog
 import org.jetbrains.kotlin.idea.scratch.output.executeCommand
@@ -56,7 +57,11 @@ class GenerateLensAction : AnAction() {
             runWriteAction {
                 val ktPsiFactory = KtPsiFactory(dataClass.project)
 
-                dataClass.addToImports(Constants.LENSES_FQCN)
+                val importsList = mutableListOf(Constants.LENSES_FQCN)
+                if (selectedParameters.find { it.isNullableType() } != null) {
+                    importsList += Constants.OPT_LENSES_FQCN
+                }
+                dataClass.addToImports(*importsList.toTypedArray())
 
                 val hasCompanionObject = dataClass.companionObjects.firstOrNull() != null
                 val companionObject = dataClass.companionObjects.firstOrNull() ?: ktPsiFactory.createCompanionObject()
