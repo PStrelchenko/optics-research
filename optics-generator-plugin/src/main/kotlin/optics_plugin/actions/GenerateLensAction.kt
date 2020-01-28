@@ -9,7 +9,7 @@ import com.intellij.psi.codeStyle.CodeStyleManager
 import com.intellij.psi.util.PsiTreeUtil
 import optics_plugin.Constants
 import optics_plugin.extensions.isNullableType
-import optics_plugin.generator.toLensReferencePropertyDeclaration
+import optics_plugin.generator.getLensDeclaration
 import optics_plugin.ui.GenerateLensDialog
 import org.jetbrains.kotlin.idea.scratch.output.executeCommand
 import org.jetbrains.kotlin.psi.KtClass
@@ -68,9 +68,10 @@ class GenerateLensAction : AnAction() {
                 val objectBody = companionObject.getOrCreateBody()
 
                 selectedParameters.forEach { parameter ->
-                    val lensProperty = parameter.toLensReferencePropertyDeclaration(dataClass)
-                    objectBody.addBefore(lensProperty, objectBody.rBrace)
-                    objectBody.addBefore(ktPsiFactory.createLineBreak(), objectBody.rBrace)
+                    parameter.getLensDeclaration()?.let { lensProperty ->
+                        objectBody.addBefore(lensProperty, objectBody.rBrace)
+                        objectBody.addBefore(ktPsiFactory.createLineBreak(), objectBody.rBrace)
+                    }
                 }
 
                 if (!hasCompanionObject) {
