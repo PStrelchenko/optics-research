@@ -7,6 +7,7 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.psi.util.PsiTreeUtil
 import optics_plugin.ui.GenerateLensDialog
 import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.kotlin.psi.KtParameter
 
 class GenerateLensAction : AnAction() {
 
@@ -15,6 +16,9 @@ class GenerateLensAction : AnAction() {
         ktClass?.let { dataClass ->
             val dialog = GenerateLensDialog(dataClass)
             dialog.show()
+            if (dialog.isOK) {
+                generateLenses(dataClass, dialog.getSelectedParameters())
+            }
         }
     }
 
@@ -37,6 +41,10 @@ class GenerateLensAction : AnAction() {
         val psiElement = currentPsiFile.findElementAt(offset)
 
         return PsiTreeUtil.getParentOfType(psiElement, KtClass::class.java)?.takeIf { it.isData() }
+    }
+
+    private fun generateLenses(dataClass: KtClass, selectedParameters: List<KtParameter>) {
+
     }
 
 }

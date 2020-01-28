@@ -26,7 +26,7 @@ class GenerateLensDialog(ktClass: KtClass) : DialogWrapper(ktClass.project) {
         val toolbarDecorator = ToolbarDecorator.createDecorator(jList).also { it.disableAddAction() }
         val jPanel = toolbarDecorator.createPanel()
 
-        myComponent = LabeledComponent.create(jPanel, "Parameters to include in optics generator")
+        myComponent = LabeledComponent.create(jPanel, "Parameters to include in lenses generator")
 
         init()
     }
@@ -35,5 +35,8 @@ class GenerateLensDialog(ktClass: KtClass) : DialogWrapper(ktClass.project) {
     override fun createCenterPanel(): JComponent? {
         return myComponent
     }
+
+
+    fun getSelectedParameters(): List<KtParameter> = parametersListModel.items
 
 }
